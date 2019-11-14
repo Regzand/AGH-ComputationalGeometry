@@ -25,16 +25,17 @@ def plot_points(points: np.ndarray, annotations: List[str] = [], keep_aspect: bo
         plt.annotate(text, p, (5, 5), textcoords='offset pixels')
 
 
-def plot_segments(segments: List[Tuple[np.ndarray, np.ndarray]], colors: Any = None, zorder: int = 1, **kwargs):
+def plot_segments(segments: np.ndarray, colors: Any = None, zorder: int = 1, **kwargs):
 
     # handle colors conversion
     if isinstance(colors, list):
         colors = [to_rgba(c) for c in colors]
     elif colors is not None:
         colors = [to_rgba(colors)] * len(segments)
-
+    
     # plot segments using collection for better performance
     plt.gca().add_collection(LineCollection(segments, colors=colors, zorder=zorder, **kwargs))
+    plt.gca().autoscale(True)
 
 
 def plot_chain(points: np.ndarray, closed: bool = False, **kwargs):

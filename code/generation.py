@@ -40,3 +40,6 @@ def random_points_weird(n_edge: int, n_diagonal: int,
         random_points_segment(n_diagonal, p1, p3),
         random_points_segment(n_diagonal, p2, p4),
     ])
+
+def random_segments_plane(n: int, corner1: np.ndarray, corner2: np.ndarray) -> np.ndarray:
+    return np.resize(random_points_plane(2 * n, corner1, corner2), (n, 2, 2))
