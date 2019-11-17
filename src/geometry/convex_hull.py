@@ -6,6 +6,10 @@ from src.geometry import orient, dist2
 
 
 def graham(points: np.ndarray, epsilon: float = 1e-10):
+    """
+    Implements Graham scan for finding convex hull in time O(n log n).
+    https://en.wikipedia.org/wiki/Graham_scan
+    """
 
     # find first point (with lowest y then x) and remove it from points
     i0 = min(enumerate(points), key=lambda x: (x[1][1], x[1][0]))[0]
@@ -46,6 +50,10 @@ def graham(points: np.ndarray, epsilon: float = 1e-10):
 
 
 def jarvis(points: np.ndarray, epsilon: float = 1e-10):
+    """
+    Implements Jarvis (or Gift wrapping) algorithm for finding convex hull in time O(nh) where h is size of convex hull.
+    https://en.wikipedia.org/wiki/Gift_wrapping_algorithm
+    """
 
     # find first point (with lowest y then x)
     p0 = points[min(enumerate(points), key=lambda x: (x[1][1], x[1][0]))[0]]

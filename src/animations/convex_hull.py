@@ -51,6 +51,9 @@ class ConvexHullAnimation:
 
 
 def graham_generator(points: np.ndarray, epsilon: float = 1e-10):
+    """
+    Graham algorithm in form of a generator that yields next steps for animation.
+    """
 
     # find first point (with lowest y then x) and remove it from points
     i0 = min(enumerate(points), key=lambda x: (x[1][1], x[1][0]))[0]
@@ -94,6 +97,9 @@ def graham_generator(points: np.ndarray, epsilon: float = 1e-10):
 
 
 def jarvis_generator(points: np.ndarray, epsilon: float = 1e-10):
+    """
+    JArvis algorithm in form of a generator that yields next steps for animation.
+    """
 
     # find first point (with lowest y then x)
     p0 = points[min(enumerate(points), key=lambda x: (x[1][1], x[1][0]))[0]]
