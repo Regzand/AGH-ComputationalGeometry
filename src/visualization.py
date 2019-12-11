@@ -48,3 +48,11 @@ def plot_chain(points: np.ndarray, closed: bool = False, **kwargs):
         segments.append((points[-1], points[0]))
 
     plot_segments(segments, **kwargs)
+
+
+def plot_classification(poly, classes):
+    plot_points([poly[i] for i in classes['begin']], color='g')
+    plot_points([poly[i] for i in classes['end']], color='r')
+    plot_points([poly[i] for i in classes['correct']], color='black')
+    plot_points([poly[i] for i in classes['connect']], color='blue')
+    plot_points([poly[i] for i in classes['split']], color='turquoise')
