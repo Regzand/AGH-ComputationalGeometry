@@ -9,6 +9,8 @@ verify_ssl = true
 sortedcontainers = "*"
 numpy = "*"
 matplotlib = "*"
+jupyter = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"
