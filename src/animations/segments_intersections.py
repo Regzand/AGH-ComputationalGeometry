@@ -68,11 +68,14 @@ def bentley_ottmann_generator(segments):
             for seg1 in event.segments:
                 for seg2 in status:
                     point = intersection(*seg1, *seg2, restriction_1='segment', restriction_2='segment')
-                    if point is not None and point not in result:
+                    if point is None:
+                        continue
+                    point = (round(point[0], 15), round(point[1], 15))
+                    if point not in result:
                         result.add(point)
                         events.add(Event(point, EventType.INTERSECTION))
 
-            for seg in segments:
+            for seg in event.segments:
                 status.add(seg)
 
         elif event.type == EventType.END:
