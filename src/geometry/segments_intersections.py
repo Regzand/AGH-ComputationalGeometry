@@ -3,6 +3,10 @@ from enum import Enum
 from heapq import heapify, heappop
 from typing import Tuple
 
+from sortedcontainers import SortedList
+
+from src.geometry import intersection
+
 Point = Tuple[float, float]
 Segment = Tuple[Point, Point]
 
@@ -23,17 +27,40 @@ class Event:
 
 
 def bentley_ottmann(segments):
+    """ Bentley-Ottmann algorithm implementation. """
 
-    # create segments from given data
-    segments = [(tuple(a), tuple(b)) for a, b in segments]
+    # create queue of events
+    events = SortedList()
+    events.update(Event(min(*seg), EventType.BEGIN, (seg, )) for seg in segments)
+    events.update(Event(max(*seg), EventType.END) for seg in segments)
 
-    # create heap queue of events
-    events = [Event(min(*seg), EventType.BEGIN, seg) for seg in segments]
-    events += [Event(max(*seg), EventType.END) for seg in segments]
-    heapify(events)
+    # create sweep line status
+    status = SortedList()
+
+    # intersections points
+    result = set()
 
     # while there are events to handle
     while events:
-        event = heappop(events)
 
+        event = events.pop(0)
 
+        if event.type == EventType.BEGIN:
+            for seg1 in event.segments:
+                for seg2 in status:
+                    point = intersection(*seg1, *seg2, restriction_1='segment', restriction_2='segment')
+                    if point is not None and point not in result:
+                        result.add(point)
+                        events.add(Event(point, EventType.INTERSECTION))
+
+            for seg in segments:
+                status.add(seg)
+
+        elif event.type == EventType.END:
+            for seg in event.segments:
+                status.remove(seg)
+
+        elif event.type == EventType.INTERSECTION:
+            pass
+
+    return result

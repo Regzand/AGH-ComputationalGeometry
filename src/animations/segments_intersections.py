@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from sortedcontainers import SortedList
 
+from src.geometry import intersection
 from src.geometry.segments_intersections import Event, EventType
 from src.visualization import plot_segments
 
@@ -43,33 +44,42 @@ class IntersectionsAnimation:
 
 def bentley_ottmann_generator(segments):
     """
-    Bentley-Ottmann algorithm in for of a generator that yields next steps for animation.
+    Bentley-Ottmann algorithm in form of a generator that yields next steps for animation.
     """
-
-    # create segments from given data
-    segments = [(tuple(a), tuple(b)) for a, b in segments]
 
     # create queue of events
     events = SortedList()
-    events.update(Event(min(*seg), EventType.BEGIN, seg) for seg in segments)
+    events.update(Event(min(*seg), EventType.BEGIN, (seg, )) for seg in segments)
     events.update(Event(max(*seg), EventType.END) for seg in segments)
 
     # create sweep line status
     status = SortedList()
 
+    # intersections points
+    result = set()
+
     # while there are events to handle
     while events:
-        yield [e.point for e in events], [], events[0].point[0]
+        yield [e.point for e in events], list(result), events[0].point[0]
 
-        # get next event to handle
         event = events.pop(0)
 
-        if event.type == EventType.END:
-            # add segment to line status
-            status.add(event.segments[0])
+        if event.type == EventType.BEGIN:
+            for seg1 in event.segments:
+                for seg2 in status:
+                    point = intersection(*seg1, *seg2, restriction_1='segment', restriction_2='segment')
+                    if point is not None and point not in result:
+                        result.add(point)
+                        events.add(Event(point, EventType.INTERSECTION))
 
+            for seg in segments:
+                status.add(seg)
 
-        elif event.type == EventType.BEGIN:
-            pass
+        elif event.type == EventType.END:
+            for seg in event.segments:
+                status.remove(seg)
+
         elif event.type == EventType.INTERSECTION:
             pass
+
+    yield [], list(result), 1000
